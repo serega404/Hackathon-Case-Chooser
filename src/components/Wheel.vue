@@ -184,7 +184,9 @@ const spinWheel = () => {
   const anglePerItem = 360 / props.cases.length
 
   const baseSpins = 8 * 360 // Увеличим кол-во оборотов (из-за очень медленной фазы)
-  const targetOffset = 270 - (winnerIndex * anglePerItem)
+  // Небольшой случайный сдвиг от точного центра сектора, чтобы стрелка не смотрела всегда в одну точку (от -25% до +25% ширины сектора)
+  const randomOffset = (Math.random() - 0.5) * 0.5 * anglePerItem
+  const targetOffset = 360 - (winnerIndex * anglePerItem + anglePerItem / 2 + randomOffset)
   const startAngle = currentRotation.value
   const targetAngle = startAngle + baseSpins + targetOffset + (360 - (startAngle % 360))
 
@@ -289,7 +291,8 @@ const getSectorStyle = (index: number) => {
 
 const getTextStyle = (index: number) => {
   const anglePerItem = 360 / props.cases.length
-  const rotation = index * anglePerItem + anglePerItem / 2
+  // Вычитаем 90 градусов, потому что текст изначально рисуется вправо (на 3 часа), а 0deg для фона — это верх (12 часов)
+  const rotation = index * anglePerItem + anglePerItem / 2 - 90
   return {
     transform: `rotate(${rotation}deg)`
   }
@@ -568,7 +571,7 @@ const getTextStyle = (index: number) => {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translateY(-10%);
+  transform: translateY(-50%);
   margin-left: 12.5%;
   /* Отступ от центра */
   width: 32.5%;
